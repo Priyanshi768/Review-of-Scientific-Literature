@@ -8,6 +8,8 @@ Original file is located at
 """
 
 """# STREAMLIT CODE"""
+import sys
+sys.path.append("/home/appuser/.local/lib/python3.12/site-packages")
 
 import os
 os.system("pip install streamlit")
