@@ -1,0 +1,112 @@
+!pip install streamlit
+!pip install pyvis
+import streamlit as st
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.decomposition import LatentDirichletAllocation as LDA
+from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.neighbors import NearestNeighbors
+from pyvis.network import Network
+import numpy as np
+
+# Title and Sidebar
+st.title("Insight Xplore: Advanced Research Paper Analysis")
+st.sidebar.title("Navigation")
+options = ["Upload Dataset", "Topic Modelling (LDA)", "Abstract Clustering", "Citation Network Analysis", "Research Paper Recommendations"]
+selection = st.sidebar.selectbox("Choose a feature", options)
+
+# Global variables
+uploaded_file = None
+df = None
+
+# Function to upload dataset
+if selection == "Upload Dataset":
+    st.sidebar.subheader("Upload Research Papers Dataset")
+    uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type="csv")
+    if uploaded_file:
+        df = pd.read_csv(uploaded_file)
+        st.write("### Dataset Preview:")
+        st.write(df.head())
+        st.session_state['df'] = df  # Store in session state for later access
+else:
+    df = st.session_state.get('df', None)
+    if df is None:
+        st.warning("Please upload a dataset first.")
+
+# Topic Modelling (LDA)
+if selection == "Topic Modelling (LDA)" and df is not None:
+    st.header("Topic Modelling with LDA")
+    text_column = st.selectbox("Select the column containing abstracts:", df.columns)
+    num_topics = st.slider("Number of Topics:", min_value=2, max_value=10, value=5)
+
+    if st.button("Run LDA"):
+        vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words='english')
+        dtm = vectorizer.fit_transform(df[text_column])
+        lda_model = LDA(n_components=num_topics, random_state=42)
+        lda_model.fit(dtm)
+
+        # Display topics
+        topics = {f"Topic {i+1}": [vectorizer.get_feature_names_out()[idx] for idx in topic.argsort()[-10:]] for i, topic in enumerate(lda_model.components_)}
+        st.write("### Discovered Topics:")
+        st.write(pd.DataFrame(topics))
+
+# Abstract Clustering
+if selection == "Abstract Clustering" and df is not None:
+    st.header("Abstract Clustering")
+    text_column = st.selectbox("Select the column for clustering:", df.columns)
+    num_clusters = st.slider("Number of Clusters:", min_value=2, max_value=10, value=5)
+
+    if st.button("Run Clustering"):
+        tfidf = TfidfVectorizer(stop_words='english')
+        tfidf_matrix = tfidf.fit_transform(df[text_column].fillna(''))
+        kmeans = KMeans(n_clusters=num_clusters, random_state=42)
+        clusters = kmeans.fit_predict(tfidf_matrix)
+
+        # Add cluster labels to dataframe
+        df['Cluster'] = clusters
+        st.write("### Clustered Data:")
+        st.write(df[['Cluster', text_column]].head())
+
+# Citation Network Analysis
+if selection == "Citation Network Analysis" and df is not None:
+    st.header("Citation Network Analysis")
+    st.write("The dataset must contain 'source' and 'target' columns for citations.")
+    if "source" in df.columns and "target" in df.columns:
+        G = nx.from_pandas_edgelist(df, source="source", target="target")
+        pagerank = nx.pagerank(G)
+
+        st.write("### Top Papers by PageRank:")
+        top_papers = sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:10]
+        st.write(pd.DataFrame(top_papers, columns=["Paper", "PageRank"]))
+
+        # Visualize the network
+        net = Network(height='500px', width='100%', bgcolor='#222222', font_color='white')
+        net.from_nx(G)
+        net.show("citation_network.html")
+        st.write("### Citation Network Visualization:")
+        st.markdown(f'<iframe src="citation_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
+    else:
+        st.warning("The dataset does not have 'source' and 'target' columns.")
+
+# Research Paper Recommendations
+if selection == "Research Paper Recommendations" and df is not None:
+    st.header("Research Paper Recommendations")
+    text_column = st.selectbox("Select the column containing text for similarity:", df.columns)
+    paper_id = st.number_input("Enter a Paper ID for Recommendation:", min_value=0, max_value=len(df)-1, step=1)
+    num_recommendations = st.slider("Number of Recommendations:", min_value=1, max_value=10, value=5)
+
+    if st.button("Get Recommendations"):
+        tfidf = TfidfVectorizer(stop_words='english')
+        tfidf_matrix = tfidf.fit_transform(df[text_column].fillna(''))
+        cosine_sim = cosine_similarity(tfidf_matrix)
+        similar_indices = np.argsort(-cosine_sim[paper_id])[:num_recommendations+1]
+
+        recommendations = df.iloc[similar_indices[1:]]  # Exclude the input paper itself
+        st.write("### Recommended Papers:")
+        st.write(recommendations)
+
+st.sidebar.write("---")
+st.sidebar.write("Created with ❤️ by Priyanshi Gupta")
