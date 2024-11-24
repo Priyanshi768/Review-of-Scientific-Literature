@@ -18,6 +18,8 @@ os.system("pip install pyvis")
 
 os.system("pip install networkx")
 
+os.system("pip install scikit-learn")
+
 import streamlit as st
 import pandas as pd
 import networkx as nx
