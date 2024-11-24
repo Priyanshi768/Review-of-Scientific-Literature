@@ -14,9 +14,9 @@ os.system("pip install streamlit")
 
 os.system("pip install pyvis")
 
-os.system("pip install networkx")
+pip install network)
 
-os.system("pip install matplotlib")
+pip install matplotlib
 
 import streamlit as st
 import pandas as pd
