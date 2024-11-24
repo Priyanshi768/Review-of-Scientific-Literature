@@ -999,12 +999,17 @@ for _ in range(5):
     print("===============\n")
 
 """# STREAMLIT CODE"""
-
-import subprocess
 import sys
+sys.path.append("/home/appuser/.local/lib/python3.12/site-packages")
 
-subprocess.check_call([sys.executable, "-m", "pip", "install", "streamlit"])
-subprocess.check_call([sys.executable, "-m", "pip", "install", "pyvis"])
+import os
+os.system("pip install streamlit")
+
+os.system("pip install pyvis")
+
+os.system("pip install networkx")
+
+os.system("pip install scikit-learn")
 
 import streamlit as st
 import pandas as pd
