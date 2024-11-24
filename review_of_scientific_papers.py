@@ -446,7 +446,7 @@ from tqdm import tqdm
 #Downloading en_core_sci_lg model to preprocess abstracts
 from IPython.utils import io
 with io.capture_output() as captured:
-    !pip install https://s3-us-west-2amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_lg-0.4.0.tar.gz
+    !pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_lg-0.4.0.tar.gz
 
 #Import NLP librarys and the spacy package to preprocess the abstract text
 import spacy
