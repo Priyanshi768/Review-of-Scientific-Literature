@@ -671,13 +671,12 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
 
-!pip install bigjson
-!pip install pycairo
+import subprocess
+import sys
 
-!pip install python-igraph
-
-!apt-get install -y libcairo2-dev
-!pip install pycairo
+subprocess.check_call([sys.executable, "-m", "pip", "install", "bigjson"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "pycairo"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "python-igraph"])
 
 import bigjson
 from igraph import *
