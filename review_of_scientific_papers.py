@@ -857,7 +857,9 @@ plt.rcParams['font.size'] = 14
 """## Loading Data"""
 
 # Download the dataset
-!kaggle datasets download -d Cornell-University/arxiv
+import subprocess
+
+subprocess.run(['kaggle', 'datasets', 'download', '-d', 'Cornell-University/arxiv'])
 
 # Unzip the dataset
 !unzip arxiv.zip
