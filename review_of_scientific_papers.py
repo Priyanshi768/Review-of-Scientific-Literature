@@ -688,7 +688,10 @@ import matplotlib.pyplot as plt
 """## Data Preparation"""
 
 # Download the dataset from Kaggle
-!kaggle datasets download -d mathurinache/citation-network-dataset
+import subprocess
+
+subprocess.run(['kaggle', 'datasets', 'download', '-d', 'mathurinache/citation-network-dataset'])
+
 
 # Unzip the dataset
 !unzip citation-network-dataset.zip -d /content/
