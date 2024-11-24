@@ -10,31 +10,6 @@ Original file is located at
 # TOPIC MODELLING
 """
 
-import subprocess
-import sys
-
-try:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "kagglehub"])
-except subprocess.CalledProcessError as e:
-    print(f"Error occurred while trying to install kagglehub: {e}")
-
-
-
-
-# IMPORTANT: RUN THIS CELL IN ORDER TO IMPORT YOUR KAGGLE DATA SOURCES,
-# THEN FEEL FREE TO DELETE THIS CELL.
-# NOTE: THIS NOTEBOOK ENVIRONMENT DIFFERS FROM KAGGLE'S PYTHON
-# ENVIRONMENT SO THERE MAY BE MISSING LIBRARIES USED BY YOUR
-# NOTEBOOK.
-import kagglehub
-hsankesara_medium_articles_path = kagglehub.dataset_download('hsankesara/medium-articles')
-
-print('Data source import complete.')
-
-# This Python 3 environment comes with many helpful analytics libraries installed
-# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
-# For example, here's several helpful packages to load
-
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 
