@@ -1000,8 +1000,12 @@ for _ in range(5):
 
 """# STREAMLIT CODE"""
 
-!pip install streamlit
-!pip install pyvis
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "streamlit"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "pyvis"])
+
 import streamlit as st
 import pandas as pd
 import networkx as nx
