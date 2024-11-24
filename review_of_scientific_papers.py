@@ -13,7 +13,10 @@ Original file is located at
 import subprocess
 import sys
 
-subprocess.check_call([sys.executable, "-m", "pip", "install", "kagglehub"])
+try:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "kagglehub"])
+except subprocess.CalledProcessError as e:
+    print(f"Error occurred while trying to install kagglehub: {e}")
 
 
 
