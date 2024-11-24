@@ -226,7 +226,10 @@ print(medium_articles['text'].head())
 
 print(medium_articles['text'].apply(remove_stopwords).head())
 
-!pip install nltk
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "nltk"])
 import nltk
 nltk.download('punkt_tab')
 
