@@ -862,7 +862,10 @@ import subprocess
 subprocess.run(['kaggle', 'datasets', 'download', '-d', 'Cornell-University/arxiv'])
 
 # Unzip the dataset
-!unzip arxiv.zip
+import subprocess
+
+subprocess.run(['unzip', 'arxiv.zip'])
+
 
 import json # Import the json module
 import warnings
