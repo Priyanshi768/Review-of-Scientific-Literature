@@ -9,8 +9,11 @@ Original file is located at
 
 """# STREAMLIT CODE"""
 
-!pip install streamlit
-!pip install pyvis
+import os
+os.system("pip install streamlit")
+
+os.system("pip install pyvis")
+
 import streamlit as st
 import pandas as pd
 import networkx as nx
