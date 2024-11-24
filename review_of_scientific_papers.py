@@ -10,7 +10,10 @@ Original file is located at
 # TOPIC MODELLING
 """
 
-pip install kagglehub
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "kagglehub"])
 .\venv\Scripts\activate
 
 
