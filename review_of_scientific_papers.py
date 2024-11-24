@@ -796,7 +796,10 @@ temp = data[data['references'].notna()].apply(add_edge, axis = 1)
 * As expected, majority of references are refered only once in the small subset; a few have around 2 publications refering them
 """
 
-!pip install matplotlib
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib"])
 import matplotlib.pyplot as plt # Import the pyplot module from matplotlib as plt
 import numpy as np # Import numpy for np.nan
 import igraph as ig
