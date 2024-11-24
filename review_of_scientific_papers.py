@@ -769,8 +769,10 @@ reference_list = list(reference_doc['id'].values)
 doc_list = list(reference_doc['doc_type'].values)
 count = len(reference_list)
 
-!pip install python-igraph
-from igraph import Graph # Import the Graph class from igraph library
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "python-igraph"])
 
 references_graph = Graph(directed = False)
 references_graph.add_vertices(count)
