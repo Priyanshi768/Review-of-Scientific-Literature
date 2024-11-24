@@ -53,7 +53,11 @@ from gensim.models import CoherenceModel
 from pprint import pprint
 
 # Plotting tools
-!pip install pyLDAvis
+import subprocess
+import sys
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "pyLDAvis"])
+
 import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
 
