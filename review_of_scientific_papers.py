@@ -694,8 +694,7 @@ subprocess.run(['kaggle', 'datasets', 'download', '-d', 'mathurinache/citation-n
 
 
 # Unzip the dataset
-!unzip citation-network-dataset.zip -d /content/
-
+subprocess.run(['unzip', 'citation-network-dataset.zip', '-d', '/content/'])
 import bigjson
 import numpy as np
 
