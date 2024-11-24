@@ -44,6 +44,7 @@ import subprocess
 import sys
 
 subprocess.check_call([sys.executable, "-m", "pip", "install", "pyLDAvis"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib"])
 
 import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
