@@ -14,7 +14,7 @@ os.system("pip install streamlit")
 
 os.system("pip install pyvis")
 
-pip install network)
+pip install network
 
 pip install matplotlib
 
