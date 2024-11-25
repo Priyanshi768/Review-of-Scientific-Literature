@@ -20,6 +20,9 @@ os.system("pip install networkx")
 
 os.system("pip install scikit-learn")
 
+os.system("pip install PyPDF2")
+
+
 import streamlit as st
 import pandas as pd
 import networkx as nx
