@@ -42,19 +42,47 @@ selection = st.sidebar.selectbox("Choose a feature", options)
 uploaded_file = None
 df = None
 
-# Function to upload dataset
+import pandas as pd
+import streamlit as st
+from PyPDF2 import PdfReader
+
+# Function to handle dataset upload and processing
 if selection == "Upload Dataset":
     st.sidebar.subheader("Upload Research Papers Dataset")
-    uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type="csv")
+    uploaded_file = st.sidebar.file_uploader("Upload a file (CSV, XLS, XLSX, JSON, PDF)", type=["csv", "xls", "xlsx", "json", "pdf"])
+    
     if uploaded_file:
-        df = pd.read_csv(uploaded_file)
-        st.write("### Dataset Preview:")
-        st.write(df.head())
-        st.session_state['df'] = df  # Store in session state for later access
+        file_extension = uploaded_file.name.split(".")[-1].lower()
+
+        if file_extension == "csv":
+            df = pd.read_csv(uploaded_file)
+        elif file_extension in ["xls", "xlsx"]:
+            df = pd.read_excel(uploaded_file)
+        elif file_extension == "json":
+            df = pd.read_json(uploaded_file)
+        elif file_extension == "pdf":
+            pdf_reader = PdfReader(uploaded_file)
+            pdf_text = ""
+            for page in pdf_reader.pages:
+                pdf_text += page.extract_text()
+            st.text_area("Extracted Text from PDF:", pdf_text, height=300)
+            st.warning("PDFs are displayed as text and cannot be previewed as a structured dataset.")
+            df = None
+        else:
+            st.error("Unsupported file type.")
+            df = None
+
+        if df is not None:
+            st.write("### Dataset Preview:")
+            st.write(df.head())
+            st.session_state['df'] = df  # Store in session state for later access
+    else:
+        st.warning("Please upload a file.")
 else:
     df = st.session_state.get('df', None)
     if df is None:
         st.warning("Please upload a dataset first.")
+
 
 # Topic Modelling (LDA)
 if selection == "Topic Modelling (LDA)" and df is not None:
