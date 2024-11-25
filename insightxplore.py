@@ -128,32 +128,28 @@ import streamlit as st
 
 if selection == "Citation Network Analysis" and df is not None:
     st.header("Citation Network Analysis")
+    st.write("The dataset must contain 'source' and 'target' columns for citations.")
 
-    # Select the type of network to analyze
-    network_type = st.selectbox("Select the type of network:", ["Citation Network", "Author Collaboration Network", "Claps Network"])
+    if "source" in df.columns and "target" in df.columns:
+        # Build the citation network
+        G = nx.from_pandas_edgelist(df, source="source", target="target")
+        pagerank = nx.pagerank(G)
 
-    if network_type == "Citation Network":
-        st.write("The dataset must contain 'source' and 'target' columns for citations.")
-        if "source" in df.columns and "target" in df.columns:
-            # Build the citation network
-            G = nx.from_pandas_edgelist(df, source="source", target="target")
-            pagerank = nx.pagerank(G)
+        st.write("### Top Papers by PageRank:")
+        top_papers = sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:10]
+        st.write(pd.DataFrame(top_papers, columns=["Paper", "PageRank"]))
 
-            st.write("### Top Papers by PageRank:")
-            top_papers = sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:10]
-            st.write(pd.DataFrame(top_papers, columns=["Paper", "PageRank"]))
+        # Visualize the network
+        net = Network(height='500px', width='100%', bgcolor='#222222', font_color='white')
+        net.from_nx(G)
+        net.show("citation_network.html")
+        
+        # Correctly indented visualization section
+        st.write("### Citation Network Visualization:")
+        st.markdown(f'<iframe src="citation_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
+    else:
+        st.warning("The dataset does not have 'source' and 'target' columns.")
 
-            # Visualize the network
-            net = Network(height='500px', width='100%', bgcolor='#222222', font_color='white')
-            net.from_nx(G)
-            net.show("citation_network.html")
-            net.show("author_network.html")
-st.markdown(f'<iframe src="author_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
-
-            st.write("### Citation Network Visualization:")
-            st.markdown(f'<iframe src="citation_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
-        else:
-            st.warning("The dataset does not have 'source' and 'target' columns.")
 
     elif network_type == "Author Collaboration Network":
         st.write("The dataset must contain an 'author' column with comma-separated author names.")
