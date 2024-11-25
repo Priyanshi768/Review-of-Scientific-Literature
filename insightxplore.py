@@ -146,7 +146,10 @@ if selection == "Citation Network Analysis" and df is not None:
             # Visualize the network
             net = Network(height='500px', width='100%', bgcolor='#222222', font_color='white')
             net.from_nx(G)
-            net.show("citation_network.html", notebook=False)
+            net.show("citation_network.html")
+            net.show("author_network.html")
+st.markdown(f'<iframe src="author_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
+
             st.write("### Citation Network Visualization:")
             st.markdown(f'<iframe src="citation_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
         else:
