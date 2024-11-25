@@ -118,26 +118,81 @@ if selection == "Abstract Clustering" and df is not None:
         st.write("### Clustered Data:")
         st.write(df[['Cluster', text_column]].head())
 
-# Citation Network Analysis
+import networkx as nx
+from pyvis.network import Network
+import pandas as pd
+import streamlit as st
+
 if selection == "Citation Network Analysis" and df is not None:
     st.header("Citation Network Analysis")
-    st.write("The dataset must contain 'source' and 'target' columns for citations.")
-    if "source" in df.columns and "target" in df.columns:
-        G = nx.from_pandas_edgelist(df, source="source", target="target")
-        pagerank = nx.pagerank(G)
 
-        st.write("### Top Papers by PageRank:")
-        top_papers = sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:10]
-        st.write(pd.DataFrame(top_papers, columns=["Paper", "PageRank"]))
+    # Select the type of network to analyze
+    network_type = st.selectbox("Select the type of network:", ["Citation Network", "Author Collaboration Network", "Claps Network"])
 
-        # Visualize the network
-        net = Network(height='500px', width='100%', bgcolor='#222222', font_color='white')
-        net.from_nx(G)
-        net.show("citation_network.html")
-        st.write("### Citation Network Visualization:")
-        st.markdown(f'<iframe src="citation_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
-    else:
-        st.warning("The dataset does not have 'source' and 'target' columns.")
+    if network_type == "Citation Network":
+        st.write("The dataset must contain 'source' and 'target' columns for citations.")
+        if "source" in df.columns and "target" in df.columns:
+            # Build the citation network
+            G = nx.from_pandas_edgelist(df, source="source", target="target")
+            pagerank = nx.pagerank(G)
+
+            st.write("### Top Papers by PageRank:")
+            top_papers = sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:10]
+            st.write(pd.DataFrame(top_papers, columns=["Paper", "PageRank"]))
+
+            # Visualize the network
+            net = Network(height='500px', width='100%', bgcolor='#222222', font_color='white')
+            net.from_nx(G)
+            net.show("citation_network.html")
+            st.write("### Citation Network Visualization:")
+            st.markdown(f'<iframe src="citation_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
+        else:
+            st.warning("The dataset does not have 'source' and 'target' columns.")
+
+    elif network_type == "Author Collaboration Network":
+        st.write("The dataset must contain an 'author' column with comma-separated author names.")
+        if "author" in df.columns:
+            # Build the author collaboration network
+            author_edges = []
+            for authors in df["author"]:
+                author_list = [a.strip() for a in authors.split(",")]
+                author_edges.extend([(author_list[i], author_list[j]) for i in range(len(author_list)) for j in range(i + 1, len(author_list))])
+            G = nx.Graph()
+            G.add_edges_from(author_edges)
+
+            degree = nx.degree_centrality(G)
+            st.write("### Top Authors by Degree Centrality:")
+            top_authors = sorted(degree.items(), key=lambda x: x[1], reverse=True)[:10]
+            st.write(pd.DataFrame(top_authors, columns=["Author", "Degree Centrality"]))
+
+            # Visualize the network
+            net = Network(height='500px', width='100%', bgcolor='#222222', font_color='white')
+            net.from_nx(G)
+            net.show("author_network.html")
+            st.write("### Author Collaboration Network Visualization:")
+            st.markdown(f'<iframe src="author_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
+        else:
+            st.warning("The dataset does not have an 'author' column.")
+
+    elif network_type == "Claps Network":
+        st.write("The dataset must contain 'clap_source' and 'clap_target' columns for claps-based connections.")
+        if "clap_source" in df.columns and "clap_target" in df.columns:
+            # Build the claps-based network
+            G = nx.from_pandas_edgelist(df, source="clap_source", target="clap_target")
+            pagerank = nx.pagerank(G)
+
+            st.write("### Top Nodes by PageRank:")
+            top_nodes = sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:10]
+            st.write(pd.DataFrame(top_nodes, columns=["Node", "PageRank"]))
+
+            # Visualize the network
+            net = Network(height='500px', width='100%', bgcolor='#222222', font_color='white')
+            net.from_nx(G)
+            net.show("clap_network.html")
+            st.write("### Claps Network Visualization:")
+            st.markdown(f'<iframe src="clap_network.html" width="100%" height="500"></iframe>', unsafe_allow_html=True)
+        else:
+            st.warning("The dataset does not have 'clap_source' and 'clap_target' columns.")
 
 # Research Paper Recommendations
 if selection == "Research Paper Recommendations" and df is not None:
